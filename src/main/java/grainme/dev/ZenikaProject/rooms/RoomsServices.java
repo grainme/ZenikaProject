@@ -126,7 +126,7 @@ public class RoomsServices {
                     break;
                 case "RS":
                     // RS: Reunion Simple
-                    if (room.getNumber() * COVID_FRACTION >= MINIMUM_RS_PARTICIPANTS) {
+                    if (room.getCapacity() * COVID_FRACTION >= MINIMUM_RS_PARTICIPANTS) {
                         filteredRooms.add(room);
                     }
                     break;
@@ -150,7 +150,7 @@ public class RoomsServices {
         List<Room> filteredRooms = new ArrayList<>();
 
         for (Room room : rooms) {
-            if (room.getNumber() * COVID_FRACTION >= nbrPeople) {
+            if (room.getCapacity() * COVID_FRACTION >= nbrPeople) {
                 filteredRooms.add(room);
             }
         }

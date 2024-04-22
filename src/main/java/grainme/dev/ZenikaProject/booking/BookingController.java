@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -46,8 +48,8 @@ public class BookingController {
     public ResponseEntity<Room> findByAvailability(
             @RequestParam String type,
             @RequestParam int capacity,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) Time startTime,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) Time endTime) {
 
         Room room = bookingService.findByAllFactors(type, capacity, startTime, endTime);
 

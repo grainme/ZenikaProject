@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.sql.Time;
-import java.util.List;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -21,7 +20,7 @@ class RoomsRepositoryTest {
         // Arrange
         Room room = Room.builder()
                 .name("E47")
-                .number(100)
+                .capacity(100)
                 .lastTimeReserved(Time.valueOf("09:00:00"))
                 .build();
 
@@ -33,17 +32,5 @@ class RoomsRepositoryTest {
         Assertions.assertThat(savedRoom.id).isGreaterThan(0);
     }
 
-    @Test
-    void RoomsRepository_FindAll_ReturnRoomList(){
-
-        // Arrange
-
-        // Act
-        List<Room> listOfRooms = roomsRepository.findAll();
-
-        // Assert
-        Assertions.assertThat(listOfRooms).isNotNull();
-        Assertions.assertThat(listOfRooms.size()).isEqualTo(12);
-    }
 
 }

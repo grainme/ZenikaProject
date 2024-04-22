@@ -7,10 +7,9 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Time;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingService {
@@ -23,8 +22,6 @@ public class BookingService {
 
     /**
      * Retrieve all bookings.
-     *
-     * @return List of all bookings
      */
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
@@ -32,48 +29,56 @@ public class BookingService {
 
     /**
      * Find a booking by name.
-     *
-     * @param name Name of the booking
-     * @return Booking object if found, null otherwise
      */
     public Booking findByName(String name) {
         return bookingRepository.findByName(name);
     }
 
-    /**
-     * Find available rooms between the specified start and end times.
-     * @return List of available rooms
-     */
-    public List<Room> findAvailableRooms(Time startTime, Time endTime) {
-        return roomsServices.findAvailableRooms(startTime, endTime);
-    }
 
     /**
      * Find a room by considering all factors: meeting type, capacity, start time, and end time.
-     * @return Room object that meets all criteria
      */
-    public Room findByAllFactors(String meetingType, int capacity, LocalTime startTime, LocalTime endTime) {
-        List<Room> meetingTypeRooms = roomsServices.findByMeetingType(meetingType);
-        List<Room> capacityRooms = roomsServices.findByCapacity(capacity);
-        List<Room> availableRooms = findAvailableRooms(Time.valueOf(startTime), Time.valueOf(endTime));
+    public Room findByAllFactors(String meetingType, int capacity, Time startTime, Time endTime) {
+        List<String> meetingTypeRooms = roomsServices.findByMeetingType(meetingType)
+                                        .stream()
+                                        .map(room -> room.getName())
+                                        .collect(Collectors.toList());
+        List<String> capacityRooms = roomsServices.findByCapacity(capacity)
+                                    .stream()
+                                    .map(room -> room.getName())
+                                    .collect(Collectors.toList());
+        List<String> availableRooms = roomsServices.findAvailableRooms(startTime, endTime)
+                                    .stream()
+                                    .map(room -> room.getName())
+                                    .collect(Collectors.toList());
 
-        Set<Room> intersection = new HashSet<>(meetingTypeRooms);
-        intersection.retainAll(new HashSet<>(capacityRooms));
-        intersection.retainAll(new HashSet<>(availableRooms));
+        // Filtering rooms based on the meeting type, capacity, and availability
+        Set<String> meetingTypeSet = new HashSet<>(meetingTypeRooms);
+        Set<String> capacitySet = new HashSet<>(capacityRooms);
+        Set<String> availableSet = new HashSet<>(availableRooms);
+        meetingTypeSet.retainAll(capacitySet);
+        meetingTypeSet.retainAll(availableSet);
 
-        List<Room> roomsAvailable = new ArrayList<>(intersection);
+        HashSet IntersectionSet = new HashSet<>();
+        for(String roomName : meetingTypeSet){
+            Room room = roomsServices.findByName(roomName);
+            IntersectionSet.add(room);
+        }
+        List<Room> roomsAvailable = new ArrayList<>(IntersectionSet);
 
-        // Sorting rooms by capacity in ascending order to avoid wasting resources
-        roomsAvailable.sort((Room a, Room b) -> a.getNumber() - b.getNumber());
+        // Sorting rooms by capacity in ascending order
+        roomsAvailable.sort(Comparator.comparingInt(Room::getCapacity));
 
         if (!roomsAvailable.isEmpty()) {
             Room roomResulted = roomsAvailable.get(0);
             // Keep the room not available for an additional hour due to COVID-19 constraints
-            roomResulted.setLastTimeReserved(Time.valueOf(endTime.plusHours(1)));
+            Time newTime = new Time(endTime.getTime() + TimeUnit.HOURS.toMillis(1));
+            roomResulted.setLastTimeReserved(newTime);
             roomsServices.saveRoom(roomResulted);
             return roomResulted;
         }
 
-        return null; // null if no suitable room is found
+        return null;
     }
+
 }

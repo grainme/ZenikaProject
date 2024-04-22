@@ -18,10 +18,11 @@ public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-    int number;
+    int capacity;
     Time lastTimeReserved;
     String name;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     List<Equipement> equipementList;
+
 }
