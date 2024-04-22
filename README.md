@@ -4,7 +4,7 @@
 
 The solution is developed using Java and implements an API to manage meeting rooms based on the given specifications. Below are the key components and technologies used to implement the solution:
 <br></br>
-<img src="https://github.com/grainme/Zenika_MeetingPlannerTest/assets/104838272/677137a1-c7d1-4d31-8549-2766e3dc46cf" alt="zenika_project" width="800">
+<img src="https://github.com/grainme/ZenikaProject/assets/104838272/eafc06d6-fddc-421e-811c-bf0d6d784d81" alt="zenika_project" width="800">
 
 
 ## Features
@@ -22,7 +22,7 @@ The solution is developed using Java and implements an API to manage meeting roo
   
 2. **Postman:** 
    - Used for endpoint testing and validation to ensure the API functions as expected.
-   - ![image](https://github.com/grainme/Zenika_MeetingPlannerTest/assets/104838272/e4a4ac29-fe32-4a89-84a2-32b743ba2d05)
+   - ![image](https://github.com/grainme/ZenikaProject/assets/104838272/c894a6e3-5db6-471f-b8b9-b0fdf3f1656d)
 
 
 3. **JUnit:** 
