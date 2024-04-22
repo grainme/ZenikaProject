@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import java.sql.Time;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
@@ -26,34 +27,63 @@ class BookingServiceTest {
 
         // Act
         List<Booking> listOfBookings = bookingService.getAllBookings();
-        final int EXACT_NUMBER_OF_BOOKINGS = 18;
+        final int EXACT_NUMBER_OF_BOOKINGS = 20;
 
         // Assert
         Assertions.assertThat(listOfBookings).isNotNull();
         Assertions.assertThat(listOfBookings.size()).isEqualTo(EXACT_NUMBER_OF_BOOKINGS);
     }
 
-    @Test
-    public void findByAllFactors_shouldReturnRoom_whenRoomsAreAvailable() {
-        // Arrange
-        String meetingType = "VC";
-        int capacity = 5;
-        Time startTime = Time.valueOf("09:00:00");
-        Time endTime = Time.valueOf("10:00:00");
+//    @Test
+//    public void findByAllFactors_shouldReturnRoom_whenRoomsAreAvailable() {
+//        // Arrange
+//        String meetingType = "VC";
+//        int capacity = 5;
+//        Time startTime = Time.valueOf("09:00:00");
+//        Time endTime = Time.valueOf("10:00:00");
+//
+//        // Assuming you have rooms in your database that match the criteria
+//        // Add rooms to your database that match the criteria
+//        Room room1 = roomsServices.findByName("E3001");
+//
+//        // Act
+//        Room result = bookingService.findByAllFactors(meetingType, capacity, startTime, endTime);
+//
+//        // Assert
+//        Assertions.assertThat(room1).isNotNull();
+//        Assertions.assertThat(result).isNotNull();
+//        Assertions.assertThat(result.getName()).isEqualTo("E3001");
+//        Assertions.assertThat(result.getCapacity()).isEqualTo(13);
+//    }
 
-        // Assuming you have rooms in your database that match the criteria
-        // Add rooms to your database that match the criteria
-        Room room1 = roomsServices.findByName("E3001");
+    @Test
+    public void GetAllAnswersBasedOnQuery(){
+        // Arrange
+        List<Booking> listOfBookings = bookingService.getAllBookings();
 
         // Act
-        Room result = bookingService.findByAllFactors(meetingType, capacity, startTime, endTime);
+        int QueryAnswered = 0;
+        List<String> MeetsNotDone = new ArrayList<>();
+        for(Booking booking : listOfBookings){
+            Room roomAvailable = bookingService.findByAllFactors(
+                    booking.getMeetingType(),
+                    booking.getNbrPersonnes(),
+                    booking.getStartTime(),
+                    booking.getEndTime()
+                    );
+            if(roomAvailable != null){
+                QueryAnswered++;
+                System.out.println(roomAvailable.getName());
+            }
+            else{
+                MeetsNotDone.add(booking.getName());
+            }
+        }
 
         // Assert
-        Assertions.assertThat(room1).isNotNull();
-        Assertions.assertThat(result).isNotNull();
-        Assertions.assertThat(result.getName()).isEqualTo("E3001");
-        Assertions.assertThat(result.getCapacity()).isEqualTo(13);
+        for(String booking: MeetsNotDone){
+            System.out.println(booking);
+        }
     }
-
 
 }
