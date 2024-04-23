@@ -11,15 +11,16 @@ import java.sql.Time;
 @Getter
 @Setter
 @Entity
+@Data
 @Builder
 @Table(name="bookings")
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
-    String name;
-    Time startTime;
-    Time endTime;
-    String meetingType;
-    int nbrPersonnes;
+    private int id;
+    private String name;
+    private Time startTime;
+    private Time endTime;
+    private String meetingType;
+    private int nbrPersonnes;
 }

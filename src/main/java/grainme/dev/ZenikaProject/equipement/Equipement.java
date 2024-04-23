@@ -3,10 +3,7 @@ package grainme.dev.ZenikaProject.equipement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import grainme.dev.ZenikaProject.rooms.Room;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 @Entity
@@ -15,6 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Equipement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

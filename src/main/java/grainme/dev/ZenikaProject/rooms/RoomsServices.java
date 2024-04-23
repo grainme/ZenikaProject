@@ -39,9 +39,6 @@ public class RoomsServices {
 
     /**
      * Find a room by name.
-     *
-     * @param name Name of the room
-     * @return Room object if found, null otherwise
      */
     public Room findByName(String name) {
         return roomsRepository.findByName(name);
@@ -49,27 +46,19 @@ public class RoomsServices {
 
     /**
      * Get all equipment names for a given room.
-     *
-     * @param roomName Name of the room
-     * @return List of equipment names
      */
-    public List<String> getAllEquipments(String roomName) {
-        Room room = findByName(roomName);
+    public List<String> getAllEquipments(Room room) {
         List<String> equipmentNames = new ArrayList<>();
-
-        for (Equipement equipment : room.getEquipementList()) {
-            equipmentNames.add(equipment.getName());
+        if (room.getEquipementList() != null) {
+            for (Equipement equipment : room.getEquipementList()) {
+                equipmentNames.add(equipment.getName());
+            }
         }
-
         return equipmentNames;
     }
 
     /**
      * Find rooms available between specified start and end times.
-     *
-     * @param startTime Start time
-     * @param endTime   End time
-     * @return List of available rooms
      */
     public List<Room> findAvailableRooms(@Param("startTime") Time startTime, @Param("endTime") Time endTime) {
         List<Room> availableRooms = new ArrayList<>();
@@ -93,19 +82,13 @@ public class RoomsServices {
 
     /**
      * Find rooms by meeting type.
-     *
-     * @param meetingType Meeting type
-     * @return List of rooms matching the meeting type
-     * @throws IllegalArgumentException if an invalid meeting type is provided
      */
     public List<Room> findByMeetingType(String meetingType) {
         List<Room> rooms = getListOfRooms();
         List<Room> filteredRooms = new ArrayList<>();
 
         for (Room room : rooms) {
-            String roomName = room.getName();
-            List<String> roomEquipments = getAllEquipments(roomName);
-
+            List<String> roomEquipments = getAllEquipments(room);
             switch (meetingType) {
                 case "VC":
                     if (roomEquipments.contains("Pieuvre") && roomEquipments.contains("Ecran") &&
@@ -141,9 +124,6 @@ public class RoomsServices {
 
     /**
      * Find rooms by capacity.
-     *
-     * @param nbrPeople Number of people
-     * @return List of rooms with capacity greater than or equal to the specified number
      */
     public List<Room> findByCapacity(int nbrPeople) {
         List<Room> rooms = getListOfRooms();

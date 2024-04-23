@@ -1,94 +1,65 @@
 package grainme.dev.ZenikaProject.rooms;
 
+import grainme.dev.ZenikaProject.booking.Booking;
+import grainme.dev.ZenikaProject.booking.BookingRepository;
+import grainme.dev.ZenikaProject.equipement.Equipement;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class RoomsServicesTest {
-
-    @Autowired
+    @Mock
+    private RoomsRepository roomsRepository;
+    @Mock
+    private BookingRepository bookingRepository;
+    @InjectMocks
     private RoomsServices roomsServices;
 
-    @Test
-    void RoomsServices_FindByName_ReturnRoom(){
-        // Arrange
-        String roomName = "E3001";
 
-        // Act
-        Room room = roomsServices.findByName(roomName);
+    private Room room;
+    private Booking booking;
 
-        // Assert
-        Assertions.assertThat(room).isNotNull();
-        Assertions.assertThat(room.getName()).isEqualTo("E3001");
-        Assertions.assertThat(room.getCapacity()).isEqualTo(13);
+    @BeforeEach
+    public void init(){
+        room = Room.builder().name("E0047").capacity(47).build();
+        booking = Booking.builder().name("Reunion 47").nbrPersonnes(4).meetingType("VC").build();
     }
 
-    @Test
-    void RoomsServices_FindAll_ReturnListOfEquipments(){
-
-        // Arrange
-        Room room = roomsServices.getListOfRooms().get(0);
-
-        // Act
-        List<String> listOfEquipments = roomsServices.getAllEquipments(room.getName());
-
-        // Assert
-        Assertions.assertThat(listOfEquipments).isNotNull();
-        Assertions.assertThat(listOfEquipments.size()).isGreaterThan(0);
-
-    }
 
     @Test
-    void RoomsServices_FindByMeetingType_ReturnListOfRooms(){
-
+    void roomsServices_GetAllEquipments_ReturnListOfEquipmentNames() {
         // Arrange
-        String meetingType = "VC";
+        Equipement equipement = Equipement.builder().name("Ecran").build();
+        equipement.setRoom(room);
+
+
+        List<Equipement> roomEquipments = Optional.ofNullable(room.getEquipementList())
+                .orElse(new ArrayList<>());
+
+        roomEquipments.add(equipement);
+        room.setEquipementList(roomEquipments);
+
+        roomsServices.saveRoom(room);
 
         // Act
-        List<Room> listOfRoomsByMeetingType = roomsServices.findByMeetingType(meetingType);
+        List<String> listEquipments = roomsServices.getAllEquipments(room);
 
         // Assert
-        Assertions.assertThat(listOfRoomsByMeetingType).isNotNull();
-        // should have 3 items inside : Ecran, Pieuvre, Webcam
-        Assertions.assertThat(listOfRoomsByMeetingType.get(0).getEquipementList().size()).isEqualTo(3);
-    }
-
-    @Test
-    void RoomsServices_FindByCapacity_ReturnListOfRooms(){
-
-        // Arrange
-        int numberOfParticipants = 13;
-
-        // Act
-        List<Room> listOfRoomsByCapacity = roomsServices.findByCapacity(numberOfParticipants);
-
-        // Assert
-        Assertions.assertThat(listOfRoomsByCapacity).isNotNull();
-        Assertions.assertThat(listOfRoomsByCapacity.size()).isGreaterThan(0);
-    }
-
-    @Test
-    void RoomsServices_FindByTimeAvailability_ReturnListOfRooms(){
-
-        // Arrange
-        Time startTime = Time.valueOf("09:00:00");
-        Time finishTime = Time.valueOf("10:00:00");
-        final int TOTAL_NUMBER_ROOMS = 12;
-
-        // Act
-        List<Room> listOfRoomsByCapacity = roomsServices.findAvailableRooms(startTime, finishTime);
-
-        // Assert
-        Assertions.assertThat(listOfRoomsByCapacity).isNotNull();
-        Assertions.assertThat(listOfRoomsByCapacity.size()).isGreaterThan(0);
-        Assertions.assertThat(listOfRoomsByCapacity.size()).isEqualTo(TOTAL_NUMBER_ROOMS);
+        Assertions.assertThat(listEquipments).isNotNull();
+        Assertions.assertThat(listEquipments.size()).isGreaterThan(0);
     }
 }

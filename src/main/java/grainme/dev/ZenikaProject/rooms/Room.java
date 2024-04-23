@@ -14,15 +14,16 @@ import java.util.List;
 @Entity
 @Table(name="rooms")
 @Builder
+@Data
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
-    int capacity;
-    Time lastTimeReserved;
-    String name;
+    private int id;
+    private int capacity;
+    private Time lastTimeReserved;
+    private String name;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    List<Equipement> equipementList;
+    private List<Equipement> equipementList;
 
 }
