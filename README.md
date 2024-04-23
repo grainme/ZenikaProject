@@ -30,4 +30,4 @@ The solution is developed using Java and implements an API to manage meeting roo
 
 ## Note on Testing
 
-Please note that not all methods have been extensively tested as this project serves as a demonstration case. The primary focus was on implementing the core functionalities based on the provided specifications. Further testing and validation would be required for a production-ready application to ensure robustness and reliability.
+Please note that not all methods have been extensively tested as this project serves as a demonstration case. 
