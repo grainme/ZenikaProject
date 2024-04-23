@@ -25,8 +25,12 @@ The solution is developed using Java and implements an API to manage meeting roo
    - ![image](https://github.com/grainme/ZenikaProject/assets/104838272/c894a6e3-5db6-471f-b8b9-b0fdf3f1656d)
 
 
-3. **JUnit:** 
+3. **JUnit + Mockito:** 
    - Utilized for unit testing to validate individual methods and functionalities of specific classes.
+  
+3. **IDE:** 
+   - I use Intellij IDEA Community Edition.
+  
 
 ## Note on Testing
 
